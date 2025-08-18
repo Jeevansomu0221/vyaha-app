@@ -1,0 +1,48 @@
+  const localFoods = [
+    { name: "Samosa", price: "₹20", rating: 4.5, image: require("../../assets/images/foods/samosa.jpg") },
+    { name: "Pav Bhaji", price: "₹60", rating: 4.7, image: require("../../assets/images/foods/pav bhaji.jpg") },
+    { name: "Pani Puri", price: "₹30", rating: 4.2, image: require("../../assets/images/foods/pani puri.jpg") },
+    { name: "Vada Pav", price: "₹25", rating: 4.6, image: require("../../assets/images/foods/vadapav.jpg") },
+    { name: "Shawarma", price: "₹90", rating: 4.8, image: require("../../assets/images/foods/shawarma.jpg") },
+    { name: "Manchuria", price: "₹90", rating: 4.8, image: require("../../assets/images/foods/manchuria.jpg") },
+    { name: "Noodles", price: "₹90", rating: 4.8, image: require("../../assets/images/foods/noodles.jpg") },
+  ];
+
+  // Bakery
+  const bakery = [
+    { name: "Puffs", price: "₹25", rating: 4.2, image: require("../../assets/images/foods/vegpuff.jpg") },
+    { name: "Pizza", price: "₹250", rating: 4.6, image: require("../../assets/images/foods/pizza.jpg") },
+    { name: "Burger", price: "₹25", rating: 4.2, image: require("../../assets/images/foods/burger.jpg") },
+    { name: "Cakes", price: "₹250", rating: 4.6, image: require("../../assets/images/foods/cakes.jpg") },
+  ];
+
+  // Tiffins
+  const tiffins = [
+    { name: "Vada", price: "₹35", rating: 4.4, image: require("../../assets/images/foods/vada.jpg") },
+    { name: "Poori", price: "₹50", rating: 4.3, image: require("../../assets/images/foods/poori.jpg") },
+    { name: "Dosa", price: "₹35", rating: 4.4, image: require("../../assets/images/foods/dosa.jpg") },
+    { name: "Idly", price: "₹50", rating: 4.3, image: require("../../assets/images/foods/idly.jpg") },
+  ];
+
+  // Restaurants
+  const restaurants = [
+    { name: "Veg Biryani", price: "₹120", rating: 4.6, image: require("../../assets/images/foods/vegbiryani.jpg") },
+    { name: "Paneer Biryani", price: "₹150", rating: 4.7, image: require("../../assets/images/foods/paneerbiryani.jpg") },
+    { name: "Chicken Biryani", price: "₹120", rating: 4.6, image: require("../../assets/images/foods/chickenbiryani.jpg") },
+  ];
+
+  // Drinkables
+  const Drinkables = [
+    { name: "Juices", price: "₹120", rating: 4.6, image: require("../../assets/images/foods/juices.jpg") },
+    { name: "Lassi", price: "₹150", rating: 4.7, image: require("../../assets/images/foods/lassi.jpg") },
+    { name: "Tea", price: "₹120", rating: 4.6, image: require("../../assets/images/foods/tea.jpg") },
+    { name: "Coffee", price: "₹150", rating: 4.7, image: require("../../assets/images/foods/coffee.jpg") },
+  ];
+
+  // Ice creams
+  const icecreams = [
+    { name: "Vanilla Ice Cream", price: "₹60", rating: 4.6, image: require("../../assets/images/foods/vanillaicecream.jpg") },
+    { name: "Strawberry Ice Cream", price: "₹70", rating: 4.6, image: require("../../assets/images/foods/strawberryicecream.jpg") },
+    { name: "Chocolate Ice Cream", price: "₹60", rating: 4.6, image: require("../../assets/images/foods/chocolateicecream.jpg") },
+    { name: "Kulfi", price: "₹70", rating: 4.6, image: require("../../assets/images/foods/kulfiicecream.jpg") },
+  ];
