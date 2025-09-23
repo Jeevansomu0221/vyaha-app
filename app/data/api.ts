@@ -1,7 +1,7 @@
 import axios from "axios";
 
 const API = axios.create({
-  baseURL: "http://localhost:5000/api", // replace with your backend URL
+  baseURL: "http://localhost:5000/api", 
 });
 
 export const placeOrder = (token: string, partnerId: string, items: any[]) => {
