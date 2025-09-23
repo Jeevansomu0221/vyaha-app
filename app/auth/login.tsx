@@ -3,18 +3,18 @@ import { LinearGradient } from "expo-linear-gradient";
 import { useRouter } from "expo-router";
 import React, { useEffect, useRef, useState } from "react";
 import {
-    ActivityIndicator,
-    Alert,
-    Animated,
-    Dimensions,
-    KeyboardAvoidingView,
-    Platform,
-    StatusBar,
-    StyleSheet,
-    Text,
-    TextInput,
-    TouchableOpacity,
-    View,
+  ActivityIndicator,
+  Alert,
+  Animated,
+  Dimensions,
+  KeyboardAvoidingView,
+  Platform,
+  StatusBar,
+  StyleSheet,
+  Text,
+  TextInput,
+  TouchableOpacity,
+  View,
 } from "react-native";
 import { useAuth } from "../context/AuthContext";
 
@@ -146,16 +146,12 @@ export default function LoginScreen() {
     }
   };
 
-  const handleGuestLogin = async () => {
-    setIsLoading(true);
-    try {
-      await new Promise(resolve => setTimeout(resolve, 800));
-      guestLogin();
-    } catch (error) {
-      Alert.alert("Error", "Failed to continue as guest. Please try again.");
-    } finally {
-      setIsLoading(false);
-    }
+  const handleGuestContinue = () => {
+    // Mark user as guest
+    guestLogin(); // Call the guest login function from your auth context
+    
+    // Navigate directly to the food tab
+    router.replace("/(tabs)/food");
   };
 
   const logoRotate = logoRotateAnim.interpolate({
@@ -385,7 +381,7 @@ export default function LoginScreen() {
                 {/* Guest Login Button */}
                 <TouchableOpacity
                   style={styles.guestButton}
-                  onPress={handleGuestLogin}
+                  onPress={handleGuestContinue}
                   disabled={isLoading}
                   activeOpacity={0.8}
                 >

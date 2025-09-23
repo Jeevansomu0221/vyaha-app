@@ -54,9 +54,14 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
     return false;
   };
 
-  // Guest mode
+  // Guest mode - CORRECTED VERSION
   const guestLogin = () => {
-    setUser({ id: "guest", phone: "guest", guest: true, addresses: [] });
+    setUser({ 
+      id: "guest", 
+      phone: "guest", 
+      guest: true, 
+      addresses: [] 
+    });
   };
 
   // Logout
