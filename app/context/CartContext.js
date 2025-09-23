@@ -13,7 +13,8 @@ export function CartProvider({ children }) {
         (i) =>
           i.name === item.name &&
           i.product === item.product &&
-          i.restaurant === item.restaurant
+          i.restaurant === item.restaurant &&
+          i.unit === item.unit
       );
 
       if (existing) {
@@ -33,7 +34,8 @@ export function CartProvider({ children }) {
           !(
             i.name === item.name &&
             i.product === item.product &&
-            i.restaurant === item.restaurant
+            i.restaurant === item.restaurant &&
+                      i.unit === item.unit
           )
       )
     );
@@ -46,7 +48,8 @@ export function CartProvider({ children }) {
         .map((i) =>
           i.name === item.name &&
           i.product === item.product &&
-          i.restaurant === item.restaurant
+          i.restaurant === item.restaurant &&
+           i.unit === item.unit
             ? { ...i, quantity: i.quantity - 1 }
             : i
         )

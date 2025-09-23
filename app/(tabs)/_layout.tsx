@@ -1,8 +1,15 @@
-// app/(tabs)/_layout.tsx
 import { Ionicons } from "@expo/vector-icons";
-import { Tabs } from "expo-router";
+import { Redirect, Tabs } from "expo-router";
+import { useAuth } from "../context/AuthContext";
 
 export default function TabsLayout() {
+  const { user } = useAuth();
+
+  // If no user → send back to login
+  if (!user) {
+    return <Redirect href="/auth/login" />;
+  }
+
   return (
     <Tabs
       screenOptions={{
@@ -14,13 +21,25 @@ export default function TabsLayout() {
           height: 65,
           paddingBottom: 10,
           paddingTop: 8,
+
+          // Floating effect
+          position: "absolute",
+          bottom: 15,
+          left: 10,
+          right: 10,
+          borderRadius: 20,
+          elevation: 5,
+          shadowColor: "#000",
+          shadowOpacity: 0.1,
+          shadowRadius: 4,
         },
         tabBarLabelStyle: {
           fontSize: 12,
-          marginBottom: 4,
+          marginBottom: 1,
         },
       }}
     >
+      {/* Food Tab */}
       <Tabs.Screen
         name="food"
         options={{
@@ -30,6 +49,8 @@ export default function TabsLayout() {
           ),
         }}
       />
+
+      {/* Clothes Tab */}
       <Tabs.Screen
         name="clothes"
         options={{
@@ -39,6 +60,8 @@ export default function TabsLayout() {
           ),
         }}
       />
+
+      {/* Product Tab */}
       <Tabs.Screen
         name="product"
         options={{
@@ -48,6 +71,8 @@ export default function TabsLayout() {
           ),
         }}
       />
+
+      {/* Cart Tab */}
       <Tabs.Screen
         name="cart"
         options={{

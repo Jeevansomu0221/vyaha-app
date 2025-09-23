@@ -5,7 +5,8 @@ import { StatusBar } from "expo-status-bar";
 import "react-native-reanimated";
 
 import { useColorScheme } from "@/hooks/useColorScheme";
-import { CartProvider } from "./context/CartContext"; // ✅ import CartProvider
+import { AuthProvider } from "./context/AuthContext"; // ✅ Auth context
+import { CartProvider } from "./context/CartContext"; // ✅ Cart context
 
 export default function RootLayout() {
   const colorScheme = useColorScheme();
@@ -18,18 +19,31 @@ export default function RootLayout() {
   }
 
   return (
-    <CartProvider>
-      <ThemeProvider value={colorScheme === "dark" ? DarkTheme : DefaultTheme}>
-        <Stack>
-          {/* Tabs Navigation */}
-          <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
+    <AuthProvider>
+      <CartProvider>
+        <ThemeProvider value={colorScheme === "dark" ? DarkTheme : DefaultTheme}>
+          <Stack>
+            {/* Main Tabs Navigation */}
+            <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
 
-          {/* Not Found Page */}
-          <Stack.Screen name="+not-found" />
-        </Stack>
+            {/* Not Found Page */}
+            <Stack.Screen name="+not-found" />
 
-        <StatusBar style="auto" />
-      </ThemeProvider>
-    </CartProvider>
+            {/* 🔐 Auth Screens (login/signup/otp) */}
+            <Stack.Screen name="auth/login" options={{ headerShown: false }} />
+            <Stack.Screen name="auth/signup" options={{ headerShown: false }} />
+            <Stack.Screen name="auth/otp" options={{ headerShown: false }} />
+
+            {/* 📝 Onboarding Screen (after OTP) */}
+            <Stack.Screen
+              name="auth/onboarding"
+              options={{ headerShown: false }}
+            />
+          </Stack>
+
+          <StatusBar style="auto" />
+        </ThemeProvider>
+      </CartProvider>
+    </AuthProvider>
   );
 }
