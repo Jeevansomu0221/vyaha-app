@@ -11,11 +11,14 @@ import {
   Text,
   TouchableOpacity,
   View,
+  StatusBar,
+  Platform,
 } from "react-native";
 import { useCart } from "./context/CartContext";
-import { products } from './data/productsData'; // Import from separate file
+import { products } from './data/productsData';
 
 const { width: SCREEN_WIDTH } = Dimensions.get('window');
+const STATUSBAR_HEIGHT = Platform.OS === 'ios' ? 44 : StatusBar.currentHeight || 0;
 
 interface ProductType {
   name: string;
@@ -42,7 +45,6 @@ interface Product {
 export default function ProductDetail() {
   const { name } = useLocalSearchParams();
   const [selectedTypes, setSelectedTypes] = useState<string[]>([]);
-  const [selectedOption, setSelectedOption] = useState<string | null>(null);
   const { addToCart } = useCart();
 
   const product = products.find((p) => p.name === name);
@@ -81,7 +83,7 @@ export default function ProductDetail() {
   const handleAddToCart = () => {
     const selectedItems = product.types.filter(t => selectedTypes.includes(t.name));
     
-    if (selectedItems.length === 0 || !selectedOption) return;
+    if (selectedItems.length === 0) return;
 
     selectedItems.forEach(item => {
       const discount = item.discount || 0;
@@ -91,7 +93,7 @@ export default function ProductDetail() {
         name: item.name,
         price: Math.round(finalPrice),
         image: item.image,
-        option: selectedOption,
+        option: "Standard", // Default option since we removed the preparation style selection
         quantity: 1,
         unit: item.unit,
       });
@@ -102,7 +104,12 @@ export default function ProductDetail() {
 
   return (
     <SafeAreaView style={styles.container}>
-      <ScrollView style={styles.scrollView} showsVerticalScrollIndicator={false}>
+      <StatusBar barStyle="light-content" backgroundColor="transparent" translucent />
+      <ScrollView 
+        style={styles.scrollView} 
+        showsVerticalScrollIndicator={false}
+        contentContainerStyle={styles.scrollViewContent}
+      >
         {/* Hero Section with Text Overlay */}
         <View style={styles.heroSection}>
           <Image source={product.image} style={styles.heroImage} />
@@ -132,10 +139,17 @@ export default function ProductDetail() {
           </LinearGradient>
           
           {/* Floating Buttons */}
-          <TouchableOpacity style={styles.backButton} onPress={() => router.back()}>
+          <TouchableOpacity 
+            style={styles.backButton} 
+            onPress={() => router.back()}
+            activeOpacity={0.8}
+          >
             <Ionicons name="arrow-back" size={18} color="#000" />
           </TouchableOpacity>
-          <TouchableOpacity style={styles.favoriteButton}>
+          <TouchableOpacity 
+            style={styles.favoriteButton}
+            activeOpacity={0.8}
+          >
             <Ionicons name="heart-outline" size={18} color="#000" />
           </TouchableOpacity>
         </View>
@@ -144,12 +158,8 @@ export default function ProductDetail() {
         <View style={styles.contentContainer}>
           {/* Product Variants */}
           <View style={styles.section}>
-            <Text style={styles.sectionTitle}>Choose Your Favorite</Text>
-            <ScrollView 
-              horizontal 
-              showsHorizontalScrollIndicator={false}
-              contentContainerStyle={styles.typesContainer}
-            >
+            <Text style={styles.sectionTitle}>Select your items</Text>
+            <View style={styles.typesGrid}>
               {product.types.map((type, index) => {
                 const isSelected = selectedTypes.includes(type.name);
                 const discountedPrice = type.discount 
@@ -161,6 +171,7 @@ export default function ProductDetail() {
                     key={index}
                     style={[styles.typeCard, isSelected && styles.typeCardSelected]}
                     onPress={() => toggleType(type.name)}
+                    activeOpacity={0.7}
                   >
                     <View style={styles.typeImageContainer}>
                       <Image source={type.image} style={styles.typeImage} />
@@ -200,32 +211,6 @@ export default function ProductDetail() {
                   </TouchableOpacity>
                 );
               })}
-            </ScrollView>
-          </View>
-
-          {/* Preparation Options */}
-          <View style={styles.section}>
-            <Text style={styles.sectionTitle}>Preparation Style</Text>
-            <View style={styles.optionsRow}>
-              {product.options.map((option, index) => {
-                const isSelected = selectedOption === option;
-                return (
-                  <TouchableOpacity
-                    key={index}
-                    style={[styles.optionCard, isSelected && styles.optionCardSelected]}
-                    onPress={() => setSelectedOption(option)}
-                  >
-                    <Ionicons 
-                      name={option === "Street Food" ? "storefront" : "home"} 
-                      size={16} 
-                      color={isSelected ? "#fff" : "#4CAF50"} 
-                    />
-                    <Text style={[styles.optionText, isSelected && styles.optionTextSelected]}>
-                      {option}
-                    </Text>
-                  </TouchableOpacity>
-                );
-              })}
             </View>
           </View>
 
@@ -236,7 +221,7 @@ export default function ProductDetail() {
       {/* Add to Cart Footer */}
       <View style={styles.cartFooter}>
         <LinearGradient
-          colors={['rgba(255,255,255,0.9)', '#fff']}
+          colors={['rgba(255,255,255,0.95)', '#fff']}
           style={styles.footerGradient}
         >
           {selectedTypes.length > 0 && (
@@ -251,13 +236,14 @@ export default function ProductDetail() {
           <TouchableOpacity
             style={[
               styles.addToCartButton,
-              (!selectedTypes.length || !selectedOption) && styles.addToCartButtonDisabled
+              (!selectedTypes.length) && styles.addToCartButtonDisabled
             ]}
             onPress={handleAddToCart}
-            disabled={!selectedTypes.length || !selectedOption}
+            disabled={!selectedTypes.length}
+            activeOpacity={0.8}
           >
             <LinearGradient
-              colors={(!selectedTypes.length || !selectedOption)
+              colors={(!selectedTypes.length)
                 ? ['#cccccc', '#aaaaaa'] 
                 : ['#4CAF50', '#45a049']
               }
@@ -286,9 +272,13 @@ const styles = StyleSheet.create({
   scrollView: {
     flex: 1,
   },
+  scrollViewContent: {
+    flexGrow: 1,
+  },
   heroSection: {
     position: 'relative',
-    height: 240,
+    height: 260,
+    paddingTop: STATUSBAR_HEIGHT,
   },
   heroImage: {
     width: '100%',
@@ -354,7 +344,7 @@ const styles = StyleSheet.create({
   },
   backButton: {
     position: 'absolute',
-    top: 10,
+    top: STATUSBAR_HEIGHT + 10,
     left: 12,
     width: 32,
     height: 32,
@@ -363,14 +353,15 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
     shadowColor: '#000',
-    shadowOffset: { width: 0, height: 1 },
-    shadowOpacity: 0.1,
-    shadowRadius: 3,
-    elevation: 2,
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.15,
+    shadowRadius: 4,
+    elevation: 3,
+    zIndex: 10,
   },
   favoriteButton: {
     position: 'absolute',
-    top: 10,
+    top: STATUSBAR_HEIGHT + 10,
     right: 12,
     width: 32,
     height: 32,
@@ -379,51 +370,58 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
     shadowColor: '#000',
-    shadowOffset: { width: 0, height: 1 },
-    shadowOpacity: 0.1,
-    shadowRadius: 3,
-    elevation: 2,
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.15,
+    shadowRadius: 4,
+    elevation: 3,
+    zIndex: 10,
   },
   contentContainer: {
     backgroundColor: '#f8f9fa',
-    borderTopLeftRadius: 16,
-    borderTopRightRadius: 16,
-    marginTop: -16,
-    paddingTop: 16,
+    borderTopLeftRadius: 20,
+    borderTopRightRadius: 20,
+    marginTop: -20,
+    paddingTop: 20,
   },
   section: {
-    marginHorizontal: 12,
-    marginBottom: 20,
+    marginHorizontal: 16,
+    marginBottom: 24,
   },
   sectionTitle: {
-    fontSize: 16,
+    fontSize: 18,
     fontWeight: '700',
     color: '#2d3436',
-    marginBottom: 10,
+    marginBottom: 12,
   },
-  typesContainer: {
-    paddingRight: 12,
+  typesGrid: {
+    flexDirection: 'row',
+    flexWrap: 'wrap',
+    gap: 12,
   },
   typeCard: {
-    width: 120,
-    marginRight: 10,
+    width: (SCREEN_WIDTH - 44) / 2, // Two columns with 16px margin on sides and 12px gap
     backgroundColor: '#fff',
-    borderRadius: 10,
+    borderRadius: 12,
     overflow: 'hidden',
     borderWidth: 1.5,
     borderColor: 'transparent',
     shadowColor: '#000',
-    shadowOffset: { width: 0, height: 1 },
+    shadowOffset: { width: 0, height: 2 },
     shadowOpacity: 0.1,
-    shadowRadius: 2,
-    elevation: 2,
+    shadowRadius: 3,
+    elevation: 3,
   },
   typeCardSelected: {
     borderColor: '#4CAF50',
+    shadowColor: '#4CAF50',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.2,
+    shadowRadius: 4,
+    elevation: 5,
   },
   typeImageContainer: {
     position: 'relative',
-    height: 80,
+    height: 100,
   },
   typeImage: {
     width: '100%',
@@ -432,51 +430,54 @@ const styles = StyleSheet.create({
   },
   popularBadge: {
     position: 'absolute',
-    top: 4,
-    left: 4,
+    top: 6,
+    left: 6,
     backgroundColor: '#FF6B35',
-    paddingHorizontal: 5,
+    paddingHorizontal: 6,
     paddingVertical: 2,
     borderRadius: 4,
   },
   popularText: {
     fontSize: 8,
-    fontWeight: '600',
+    fontWeight: '700',
     color: '#fff',
   },
   discountBadge: {
     position: 'absolute',
-    top: 4,
-    right: 4,
+    top: 6,
+    right: 6,
     backgroundColor: '#e74c3c',
-    paddingHorizontal: 5,
+    paddingHorizontal: 6,
     paddingVertical: 2,
     borderRadius: 4,
   },
   discountText: {
     fontSize: 8,
-    fontWeight: '600',
+    fontWeight: '700',
     color: '#fff',
   },
   selectedOverlay: {
     position: 'absolute',
-    bottom: 4,
-    right: 4,
-    width: 22,
-    height: 22,
-    borderRadius: 11,
-    backgroundColor: 'rgba(76, 175, 80, 0.9)',
+    bottom: 6,
+    right: 6,
+    width: 24,
+    height: 24,
+    borderRadius: 12,
+    backgroundColor: 'rgba(76, 175, 80, 0.95)',
     alignItems: 'center',
     justifyContent: 'center',
+    borderWidth: 2,
+    borderColor: '#fff',
   },
   typeDetails: {
     padding: 10,
   },
   typeName: {
-    fontSize: 12,
+    fontSize: 13,
     fontWeight: '600',
     color: '#2d3436',
     marginBottom: 4,
+    height: 32, // Fixed height for consistent layout
   },
   priceRow: {
     flexDirection: 'row',
@@ -488,129 +489,105 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   typePrice: {
-    fontSize: 14,
+    fontSize: 15,
     fontWeight: '700',
     color: '#4CAF50',
   },
   discountPrice: {
-    fontSize: 14,
+    fontSize: 15,
     fontWeight: '700',
     color: '#4CAF50',
   },
   originalPrice: {
-    fontSize: 10,
+    fontSize: 11,
     color: '#636e72',
     textDecorationLine: 'line-through',
-    marginLeft: 3,
+    marginLeft: 4,
   },
   typeUnit: {
-    fontSize: 10,
+    fontSize: 11,
     color: '#636e72',
     fontWeight: '500',
   },
-  optionsRow: {
-    flexDirection: 'row',
-    gap: 8,
-  },
-  optionCard: {
-    flex: 1,
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'center',
-    backgroundColor: '#fff',
-    borderRadius: 8,
-    padding: 10,
-    borderWidth: 1.5,
-    borderColor: '#e9ecef',
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: 1 },
-    shadowOpacity: 0.05,
-    shadowRadius: 2,
-    elevation: 1,
-  },
-  optionCardSelected: {
-    borderColor: '#4CAF50',
-    backgroundColor: '#4CAF50',
-  },
-  optionText: {
-    fontSize: 12,
-    fontWeight: '600',
-    color: '#4CAF50',
-    marginLeft: 4,
-  },
-  optionTextSelected: {
-    color: '#fff',
-  },
   bottomSpacer: {
-    height: 90,
+    height: 100,
   },
   cartFooter: {
     position: 'absolute',
     bottom: 0,
     left: 0,
     right: 0,
-    paddingBottom: 16,
+    paddingBottom: 20,
+    backgroundColor: 'transparent',
   },
   footerGradient: {
-    paddingHorizontal: 12,
-    paddingTop: 10,
-    borderTopLeftRadius: 16,
-    borderTopRightRadius: 16,
+    paddingHorizontal: 16,
+    paddingTop: 12,
+    paddingBottom: 16,
+    borderTopLeftRadius: 20,
+    borderTopRightRadius: 20,
+    borderTopWidth: 1,
+    borderTopColor: 'rgba(0,0,0,0.05)',
     shadowColor: '#000',
-    shadowOffset: { width: 0, height: -2 },
+    shadowOffset: { width: 0, height: -3 },
     shadowOpacity: 0.1,
-    shadowRadius: 3,
-    elevation: 5,
+    shadowRadius: 4,
+    elevation: 10,
   },
   orderSummary: {
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
-    marginBottom: 10,
+    marginBottom: 12,
   },
   summaryText: {
-    fontSize: 12,
+    fontSize: 13,
     color: '#636e72',
     fontWeight: '500',
   },
   totalPrice: {
-    fontSize: 16,
+    fontSize: 18,
     fontWeight: '700',
     color: '#4CAF50',
   },
   addToCartButton: {
-    borderRadius: 10,
+    borderRadius: 12,
     overflow: 'hidden',
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.1,
+    shadowRadius: 3,
+    elevation: 3,
   },
   addToCartButtonDisabled: {
-    opacity: 0.6,
+    opacity: 0.7,
   },
   buttonGradient: {
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'center',
-    paddingVertical: 12,
+    paddingVertical: 14,
     paddingHorizontal: 16,
   },
   addToCartText: {
     color: '#fff',
-    fontSize: 14,
+    fontSize: 15,
     fontWeight: '700',
-    marginLeft: 5,
+    marginLeft: 6,
   },
   itemCountBadge: {
     backgroundColor: 'rgba(255,255,255,0.3)',
-    borderRadius: 8,
-    minWidth: 18,
-    height: 18,
+    borderRadius: 10,
+    minWidth: 20,
+    height: 20,
     alignItems: 'center',
     justifyContent: 'center',
-    marginLeft: 8,
+    marginLeft: 10,
   },
   itemCountText: {
     color: '#fff',
-    fontSize: 10,
-    fontWeight: '700',
+    fontSize: 11,
+    fontWeight: '800',
   },
   errorContainer: {
     flex: 1,

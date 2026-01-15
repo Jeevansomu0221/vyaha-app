@@ -1,16 +1,16 @@
 import React, { useEffect, useRef, useState } from 'react';
 import {
-    Alert,
-    FlatList,
-    KeyboardAvoidingView,
-    Platform,
-    SafeAreaView,
-    StatusBar,
-    StyleSheet,
-    Text,
-    TextInput,
-    TouchableOpacity,
-    View
+  Alert,
+  FlatList,
+  KeyboardAvoidingView,
+  Platform,
+  SafeAreaView,
+  StatusBar,
+  StyleSheet,
+  Text,
+  TextInput,
+  TouchableOpacity,
+  View
 } from 'react-native';
 
 // Type definitions
@@ -410,7 +410,8 @@ const MessagingPage: React.FC = () => {
             ref={flatListRef}
             data={selectedChat.messages}
             renderItem={renderMessage}
-            keyExtractor={(item) => item.id.toString()}
+            keyExtractor={(item, index) => (item?.id ? item.id.toString() : index.toString())}
+
             style={styles.messagesList}
             contentContainerStyle={styles.messagesContent}
             showsVerticalScrollIndicator={false}
@@ -665,13 +666,7 @@ const styles = StyleSheet.create({
     fontWeight: '600',
   },
   // Chat Screen Styles
-  chatHeader: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    backgroundColor: '#2563eb',
-    paddingHorizontal: 16,
-    paddingVertical: 12,
-  },
+  
   backButton: {
     marginRight: 12,
   },

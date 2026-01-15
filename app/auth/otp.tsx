@@ -136,28 +136,29 @@ export default function OtpScreen() {
   }, []);
 
   const handleVerify = async () => {
-    if (!otp || otp.length !== 6) {
-      Alert.alert("Invalid OTP", "Please enter a 6-digit OTP");
-      return;
-    }
+  if (!otp || otp.length !== 6) {
+    Alert.alert("Invalid OTP", "Please enter a 6-digit OTP");
+    return;
+  }
 
-    setIsLoading(true);
-    
-    try {
-      // Simulate API call delay
-      await new Promise(resolve => setTimeout(resolve, 1500));
-      
-      if (verifyOtp(otp)) {
-        router.replace("/auth/onboarding");
-      } else {
-        Alert.alert("Invalid OTP", "Please try again.");
-      }
-    } catch (error) {
-      Alert.alert("Error", "Failed to verify OTP. Please try again.");
-    } finally {
-      setIsLoading(false);
+  setIsLoading(true);
+
+  try {
+    // Wait for verification result
+    const isValid = await verifyOtp(otp);
+
+    if (isValid) {
+      router.replace("/auth/onboarding");
+    } else {
+      Alert.alert("Invalid OTP", "Please try again.");
     }
-  };
+  } catch (error) {
+    Alert.alert("Error", "Failed to verify OTP. Please try again.");
+  } finally {
+    setIsLoading(false);
+  }
+};
+
 
   const handleResendOtp = async () => {
     setCanResend(false);

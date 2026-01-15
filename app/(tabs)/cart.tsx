@@ -139,7 +139,7 @@ export default function CartScreen() {
               onPress={() => decreaseQuantity(item)}
               style={styles.quantityButton}
             >
-              <Ionicons name="remove" size={14} color="#ff6b35" />
+              <Ionicons name="remove" size={14} color="#fff" />
             </TouchableOpacity>
 
             <View style={styles.quantityDisplay}>
@@ -150,7 +150,7 @@ export default function CartScreen() {
               onPress={() => addToCart(item)}
               style={styles.quantityButton}
             >
-              <Ionicons name="add" size={14} color="#ff6b35" />
+              <Ionicons name="add" size={14} color="#fff" />
             </TouchableOpacity>
           </View>
 

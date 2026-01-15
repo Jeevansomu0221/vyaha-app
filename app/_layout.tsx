@@ -26,6 +26,36 @@ export default function RootLayout() {
             {/* Main Tabs Navigation */}
             <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
 
+            {/* Product Detail Screen */}
+            <Stack.Screen 
+              name="productDetail" 
+              options={{ 
+                headerShown: false,
+                presentation: 'card'
+              }} 
+            />
+
+            {/* Order Summary Screen */}
+            <Stack.Screen 
+              name="OrderSummary" 
+              options={{ 
+                headerShown: false,
+                presentation: 'card'
+              }} 
+            />
+
+            {/* Order Details Screen */}
+            <Stack.Screen 
+              name="OrderDetails" 
+              options={{ 
+                headerShown: false,
+                presentation: 'card'
+              }} 
+            />
+
+            {/* Orders Screens */}
+            <Stack.Screen name="orders" options={{ headerShown: false }} />
+
             {/* Not Found Page */}
             <Stack.Screen name="+not-found" />
 
